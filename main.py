@@ -9,6 +9,10 @@ app = FastAPI()
 def read_root():
     return {"Hello": "World"}
 
+@app.get("/")
+def read_root():
+    return {"Hello": "From Nejc"}
+
 
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q: Union[str, None] = None):
