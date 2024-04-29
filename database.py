@@ -1,5 +1,6 @@
 import sqlite3
 
+
 def initialize_database():
     # Create a SQLite database connection
     conn = sqlite3.connect('FastAPI.db')
@@ -17,6 +18,7 @@ def initialize_database():
     # Commit changes and close connection
     conn.commit()
     conn.close()
+
 
 # If the script is run directly, initialize the database
 if __name__ == "__main__":
