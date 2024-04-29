@@ -5,7 +5,7 @@ This is a FastAPI application for managing notes. It provides endpoints for CRUD
 ## Installation
 
 1. Clone the repository:
-git clone https://github.com/nacoraco/FastAPI.git
+'''git clone https://github.com/nacoraco/FastAPI.git'''
 
 2. Navigate to the project directory:
 cd FastAPI
