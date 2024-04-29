@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="20f3d89f-22b7-4e17-a82f-001f30ad50e9" name="Changes" comment="Added requirements.txt">
+    <list default="true" id="20f3d89f-22b7-4e17-a82f-001f30ad50e9" name="Changes" comment="Status codes added and database change for notes app.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/database.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
@@ -136,7 +136,15 @@
       <option name="project" value="LOCAL" />
       <updated>1714396833054</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Status codes added and database change for notes app.">
+      <option name="closed" value="true" />
+      <created>1714408884200</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1714408884200</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -146,6 +154,7 @@
     <MESSAGE value="SQLite" />
     <MESSAGE value="GET/PUT/POST/DELETE endpoints added" />
     <MESSAGE value="Added requirements.txt" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added requirements.txt" />
+    <MESSAGE value="Status codes added and database change for notes app." />
+    <option name="LAST_COMMIT_MESSAGE" value="Status codes added and database change for notes app." />
   </component>
 </project>

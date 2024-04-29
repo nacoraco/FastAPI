@@ -1,6 +1,9 @@
 from typing import Union, Optional
 from fastapi import FastAPI, HTTPException
+from database import initialize_database
 import sqlite3
+
+initialize_database()
 
 app = FastAPI()
 
