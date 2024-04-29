@@ -3,20 +3,28 @@
 This is a FastAPI application for managing notes. It provides endpoints for CRUD (Create, Read, Update, Delete) operations on notes stored in an SQLite database.
 
 ## Installation
+1. Install git:
+```sudo apt install git```
 
-1. Clone the repository:
+2. Clone the repository:
 ```git clone https://github.com/nacoraco/FastAPI.git```
 
-4. Navigate to the project directory:
+3. Navigate to the project directory:
 ```cd FastAPI```
 
-5. Install the required dependencies:
+4. Install python:
+```sudo apt install python3.12-venv```
+
+5. Create virtual environment:
+```source fastapi/bin/activate```
+
+6. Install the required dependencies:
 ```pip install -r requirements.txt```
 
-6. Run the FastAPI server:
+7. Run the FastAPI server:
 ```uvicorn main:app --reload```
 
-7. Open your web browser and navigate to [http://127.0.0.1:8000/docs#/](http://127.0.0.1:8000/docs#/) to access the Swagger UI. This interactive documentation allows you to explore and test the available API endpoints.
+9. Open your web browser and navigate to [http://127.0.0.1:8000/docs#/](http://127.0.0.1:8000/docs#/) to access the Swagger UI. This interactive documentation allows you to explore and test the available API endpoints.
 
 ## API Endpoints
 
