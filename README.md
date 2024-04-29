@@ -8,13 +8,13 @@ This is a FastAPI application for managing notes. It provides endpoints for CRUD
 ```git clone https://github.com/nacoraco/FastAPI.git```
 
 4. Navigate to the project directory:
-cd FastAPI
+```cd FastAPI```
 
 5. Install the required dependencies:
-pip install -r requirements.txt
+```pip install -r requirements.txt```
 
 6. Run the FastAPI server:
-uvicorn main:app --reload
+```uvicorn main:app --reload```
 
 7. Open your web browser and navigate to [http://127.0.0.1:8000/docs#/](http://127.0.0.1:8000/docs#/) to access the Swagger UI. This interactive documentation allows you to explore and test the available API endpoints.
 
