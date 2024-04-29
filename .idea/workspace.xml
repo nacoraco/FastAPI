@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="20f3d89f-22b7-4e17-a82f-001f30ad50e9" name="Changes" comment="SQLite">
+    <list default="true" id="20f3d89f-22b7-4e17-a82f-001f30ad50e9" name="Changes" comment="GET/PUT/POST/DELETE endpoints added">
+      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -119,7 +119,15 @@
       <option name="project" value="LOCAL" />
       <updated>1714337264201</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="GET/PUT/POST/DELETE endpoints added">
+      <option name="closed" value="true" />
+      <created>1714394455174</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1714394455174</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -127,6 +135,7 @@
     <MESSAGE value="FastAPI demo" />
     <MESSAGE value="Branch test" />
     <MESSAGE value="SQLite" />
-    <option name="LAST_COMMIT_MESSAGE" value="SQLite" />
+    <MESSAGE value="GET/PUT/POST/DELETE endpoints added" />
+    <option name="LAST_COMMIT_MESSAGE" value="GET/PUT/POST/DELETE endpoints added" />
   </component>
 </project>
