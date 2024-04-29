@@ -18,7 +18,7 @@ This is a FastAPI application for managing notes. It provides endpoints for CRUD
 5. Create a virtual environment named "fastapi":
 ```python3 -m venv fastapi```
 
-6. Set virtual environment:
+6. Activate the virtual environment:
 ```source fastapi/bin/activate```
 
 7. Install the required dependencies:
