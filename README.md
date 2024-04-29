@@ -16,12 +16,15 @@ This is a FastAPI application for managing notes. It provides endpoints for CRUD
 ```sudo apt install python3.12-venv```
 
 5. Create a virtual environment named "fastapi":
+```python3 -m venv fastapi```
+
+6. Set virtual environment:
 ```source fastapi/bin/activate```
 
-6. Install the required dependencies:
+7. Install the required dependencies:
 ```pip install -r requirements.txt```
 
-7. Run the FastAPI server:
+8. Run the FastAPI server:
 ```uvicorn main:app --reload```
 
 9. Open your web browser and navigate to [http://127.0.0.1:8000/docs#/](http://127.0.0.1:8000/docs#/) to access the Swagger UI. This interactive documentation allows you to explore and test the available API endpoints.
