@@ -112,7 +112,6 @@
                                 if (!response.ok) {
                                     console.error('Error deleting note');
                                 } else {
-                                    // Optionally, remove the note from the UI upon successful deletion
                                     const noteElement = document.querySelector(`[data-note-id="${noteId}"]`);
                                     if (noteElement) {
                                         noteElement.remove();
