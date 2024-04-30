@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beležka</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
+    <link rel="icon" href="https://icons.iconarchive.com/icons/wwalczyszyn/android-style/256/Notes-icon.png" type="image/x-icon">
     <style>
         body {
             padding-top: 50px !important;
@@ -92,7 +92,7 @@
 
         <form action="/search/" method="get" class="form-inline">
             <input class="form-control" type="search" placeholder="Išči po naslovu" aria-label="Search" name="query" style="background-color: transparent; border: 2px solid white; color: white;">
-            <button class="btn btn-outline-success" type="submit" style=" background: white; color: black;font-weight: bold;">IŠČI</button>
+            <button class="btn btn-outline-success" type="submit" style=" background: white; color: black;font-weight: bold;margin-left: -20px;">IŠČI</button>
         </form>
     </div>
 
@@ -104,15 +104,17 @@
 <div class="row">
     {% for note in notes %}
     <div class="col-md-3">
-        <div class='listek mb-4' contenteditable data-note-id="{{ note.id }}">
+        <div class='listek mb-4' contenteditable data-note-id="{{ note.id }}" style="position: relative;">
+            <button type="button" class="btn btn-danger" contenteditable="false" style="position: absolute; top: 20px; right: 20px;z-index:9 !important; border:2px solid black" onclick="deleteNote('{{ note.id }}')">Zbriši 🗑️</button>
             <h1>{{ note.title }}</h1>
             <ul>
-                <li>{{ note.text }}</li>
+                {% for line in note.text.split('\n') %}
+                <li>{{ line }}</li>
+                {% endfor %}
             </ul>
-            <form id="deleteForm_{{ note.id }}">
-                <button type="button" class="btn btn-danger" onclick="deleteNote('{{ note.id }}')">Zbriši</button>
-            </form>
             
+            <form id="deleteForm_{{ note.id }}"></form>
+        
             <script>
                 function deleteNote(noteId) {
                     if (confirm("Ali ste prepričani, da želite izbrisati to beležko?")) {
@@ -135,8 +137,9 @@
                     }
                 }
             </script>
-            
+        
         </div>
+        
     </div>
     {% endfor %}
 </div>
@@ -146,14 +149,16 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         const notes = document.querySelectorAll('.listek');
-
+    
         notes.forEach(note => {
             note.addEventListener('blur', () => {
                 const noteId = note.dataset.noteId;
                 const newTitle = note.querySelector('h1').textContent;
-                const newText = note.querySelector('ul li').textContent;
-
-                // Send an AJAX request to update the note
+                let newText = ""; // Initialize an empty string for concatenating text from all <li> elements
+                note.querySelectorAll('ul li').forEach(li => {
+                    newText += li.textContent + "\n"; // Concatenate text from each <li> element
+                });
+    
                 fetch(`/notes/${noteId}`, {
                         method: 'PUT',
                         headers: {
@@ -173,6 +178,7 @@
             });
         });
     </script>
+    
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -195,7 +201,7 @@
     </script>
 <br><br>
     <footer class="fixed-bottom" style=" background-color: black;padding: 15px;padding-bottom: 2px;">
-        <p style="text-align: center; color: white;">Beležka - Kajba - Skornsek</p>
+        <p style="text-align: center; color: white;">Beležka - Kajba - Skornšek</p>
     </footer>
 
 </body>

@@ -7,7 +7,6 @@ from typing import List
 import sqlite3
 
 app = FastAPI()
-
 templates = Jinja2Templates(directory="templates")
 
 # Define a function to connect to the SQLite database
@@ -51,16 +50,18 @@ async def search_notes(request: Request, query: str):
     return templates.TemplateResponse("index.html", {"request": request, "notes": notes})
 
 # Endpoint to create a new item
+
 @app.post("/notes/", response_class=HTMLResponse)
-async def create_item(request: Request, title: Optional[str] = None, text: Optional[str] = None):
+async def create_item(request: Request, title: Optional[str] = None, text: Optional[List[str]] = None):
     # If title and text are not provided, create an empty note
     if title is None and text is None:
         title = "Naslov"
-        text = "Vsebina"
+        text = ["Vsebina"]
 
     conn = get_db_conn()
     cursor = conn.cursor()
-    cursor.execute('INSERT INTO notes (title, text) VALUES (?, ?)', (title, text))
+    for item_text in text:
+        cursor.execute('INSERT INTO notes (title, text) VALUES (?, ?)', (title, item_text))
     conn.commit()
     
     # Fetch all notes after adding the new one
@@ -69,6 +70,7 @@ async def create_item(request: Request, title: Optional[str] = None, text: Optio
     
     conn.close()
     return templates.TemplateResponse("index.html", {"request": request, "notes": notes})
+
 
 
 # Endpoint to update an existing item
