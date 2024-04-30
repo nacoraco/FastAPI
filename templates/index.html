@@ -98,9 +98,34 @@
                 <ul>
                     <li>{{ note.text }}</li>
                 </ul>
-                <form action="/delnotes/{{ note.id }}" method="Delete">
-                    <button type="submit" class="btn btn-danger">Zbriši</button>
+                <form id="deleteForm_{{ note.id }}">
+                    <button type="button" class="btn btn-danger" onclick="deleteNote('{{ note.id }}')">Zbriši</button>
                 </form>
+                
+                <script>
+                    function deleteNote(noteId) {
+                        if (confirm("Ali ste prepričani, da želite izbrisati to beležko?")) {
+                            fetch(`/delnotes/${noteId}`, {
+                                method: 'DELETE'
+                            })
+                            .then(response => {
+                                if (!response.ok) {
+                                    console.error('Error deleting note');
+                                } else {
+                                    // Optionally, remove the note from the UI upon successful deletion
+                                    const noteElement = document.querySelector(`[data-note-id="${noteId}"]`);
+                                    if (noteElement) {
+                                        noteElement.remove();
+                                    }
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error deleting note:', error);
+                            });
+                        }
+                    }
+                </script>
+                
             </div>
         </div>
         {% endfor %}
