@@ -98,7 +98,8 @@ async def update_item(item_id: int, request: Request):
   return {"message": "Note updated successfully"}
 
 # Endpoint to delete a specific item by ID
-@app.delete("/notes/{item_id}")
+
+@app.delete("/delnotes/{item_id}")
 def delete_item(item_id: int):
     conn = get_db_conn()
     cursor = conn.cursor()
@@ -115,16 +116,3 @@ def delete_item(item_id: int):
     conn.close()
 
     return {"message": "Item deleted successfully"}
-
-
-@app.delete("/del/{item_id}", response_class=HTMLResponse)
-async def search_notes(item_id: int, request: Request):
-    conn = get_db_conn()
-    cursor = conn.cursor()
-    cursor.execute("DELETE * FROM notes WHERE id = ?", (item_id,))
-    notes = cursor.fetchall()
-    conn.close()
-    return templates.TemplateResponse("index.html", {"request": request, "notes": notes})
-
-
-

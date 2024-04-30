@@ -101,24 +101,45 @@
 </nav>
 
 
-    <div class="row">
-        {% for note in notes %}
-        <div class="col-md-3">
-            <div class='listek mb-4' contenteditable data-note-id="{{ note.id }}">
-                <h1>{{ note.title }}</h1>
-                <ul>
-                    <li>{{ note.text }}</li>
-                </ul>
-                <form action="/del/{{ note.id }}" method="post">
-                    <input type="hidden" name="_method" value="DELETE">
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                  </form>
-            </div>
+<div class="row">
+    {% for note in notes %}
+    <div class="col-md-3">
+        <div class='listek mb-4' contenteditable data-note-id="{{ note.id }}">
+            <h1>{{ note.title }}</h1>
+            <ul>
+                <li>{{ note.text }}</li>
+            </ul>
+            <form id="deleteForm_{{ note.id }}">
+                <button type="button" class="btn btn-danger" onclick="deleteNote('{{ note.id }}')">Zbriši</button>
+            </form>
+            
+            <script>
+                function deleteNote(noteId) {
+                    if (confirm("Ali ste prepričani, da želite izbrisati to beležko?")) {
+                        fetch(`/delnotes/${noteId}`, {
+                            method: 'DELETE'
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                console.error('Error deleting note');
+                            } else {
+                                const noteElement = document.querySelector(`[data-note-id="${noteId}"]`);
+                                if (noteElement) {
+                                    noteElement.remove();
+                                }
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error deleting note:', error);
+                        });
+                    }
+                }
+            </script>
+            
         </div>
-        {% endfor %}
-   
-      
     </div>
+    {% endfor %}
+</div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
