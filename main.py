@@ -3,6 +3,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi import Form
+from typing import List
 import sqlite3
 
 app = FastAPI()
@@ -20,7 +21,7 @@ def get_db_conn():
 async def read_notes(request: Request):
     conn = get_db_conn()
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM notes')
+    cursor.execute('SELECT * FROM notes ORDER BY id DESC')
     notes = cursor.fetchall()
     conn.close()
     return templates.TemplateResponse("index.html", {"request": request, "notes": notes})
@@ -37,17 +38,38 @@ def read_item(item_id: int):
         return item
     else:
         raise HTTPException(status_code=404, detail="Item not found")
+    
+
+    # Endpoint to search notes by title
+@app.get("/search/", response_class=HTMLResponse)
+async def search_notes(request: Request, query: str):
+    conn = get_db_conn()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM notes WHERE title LIKE ?", ('%' + query + '%',))
+    notes = cursor.fetchall()
+    conn.close()
+    return templates.TemplateResponse("index.html", {"request": request, "notes": notes})
 
 # Endpoint to create a new item
-@app.post("/notes/")
-def create_item(title: str, text: Optional[str] = None):
+@app.post("/notes/", response_class=HTMLResponse)
+async def create_item(request: Request, title: Optional[str] = None, text: Optional[str] = None):
+    # If title and text are not provided, create an empty note
+    if title is None and text is None:
+        title = "Naslov"
+        text = "Vsebina"
+
     conn = get_db_conn()
     cursor = conn.cursor()
     cursor.execute('INSERT INTO notes (title, text) VALUES (?, ?)', (title, text))
     conn.commit()
-    new_item_id = cursor.lastrowid
+    
+    # Fetch all notes after adding the new one
+    cursor.execute('SELECT * FROM notes ORDER BY id DESC')
+    notes = cursor.fetchall()
+    
     conn.close()
-    return {"id": new_item_id, "title": title, "text": text}
+    return templates.TemplateResponse("index.html", {"request": request, "notes": notes})
+
 
 # Endpoint to update an existing item
 @app.put("/notes/{item_id}")
@@ -76,7 +98,7 @@ async def update_item(item_id: int, request: Request):
   return {"message": "Note updated successfully"}
 
 # Endpoint to delete a specific item by ID
-@app.delete("/delnotes/{item_id}")
+@app.delete("/notes/{item_id}")
 def delete_item(item_id: int):
     conn = get_db_conn()
     cursor = conn.cursor()
@@ -93,3 +115,16 @@ def delete_item(item_id: int):
     conn.close()
 
     return {"message": "Item deleted successfully"}
+
+
+@app.delete("/del/{item_id}", response_class=HTMLResponse)
+async def search_notes(item_id: int, request: Request):
+    conn = get_db_conn()
+    cursor = conn.cursor()
+    cursor.execute("DELETE * FROM notes WHERE id = ?", (item_id,))
+    notes = cursor.fetchall()
+    conn.close()
+    return templates.TemplateResponse("index.html", {"request": request, "notes": notes})
+
+
+
