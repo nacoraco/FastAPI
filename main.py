@@ -5,6 +5,7 @@ from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from passlib.context import CryptContext
 from database import initialize_database
+from fastapi.responses import RedirectResponse
 from fastapi import Form
 from typing import List
 import sqlite3
@@ -25,6 +26,10 @@ def get_db_conn():
     conn.row_factory = sqlite3.Row  # Enable accessing rows by column names
     return conn
 
+# Redirect root URL to login page
+@app.get("/", include_in_schema=False)
+async def root():
+    return RedirectResponse(url="/login/")
 
 # Model za prijavo
 class UserLogin(BaseModel):
@@ -44,6 +49,11 @@ def verify_password(plain_password, hashed_password):
 # Metoda za hashiranje gesla
 def hash_password(password):
     return pwd_context.hash(password)
+
+# API endpoint for accessing login page
+@app.get("/login/", response_class=HTMLResponse)
+async def get_login_page(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request})
 
 
 # API endpoint za prijavo
@@ -87,12 +97,14 @@ async def register(user: UserRegister):
 # Endpoint to retrieve all notes
 @app.get("/notes/", response_class=HTMLResponse)
 async def read_notes(request: Request):
+    username = request.query_params.get("username")
     conn = get_db_conn()
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM notes ORDER BY id DESC')
     notes = cursor.fetchall()
     conn.close()
-    return templates.TemplateResponse("index.html", {"request": request, "notes": notes})
+    
+    return templates.TemplateResponse("index.html", {"request": request, "notes": notes, "username": username})
 
 
 # Endpoint to retrieve a specific user
@@ -121,17 +133,32 @@ async def search_notes(request: Request, query: str):
 
 # Endpoint to create a new item
 
+# Endpoint to create a new item
 @app.post("/notes/", response_class=HTMLResponse)
 async def create_item(request: Request, title: Optional[str] = None, text: Optional[List[str]] = None):
     # If title and text are not provided, create an empty note
     if title is None and text is None:
         title = "Naslov"
         text = ["Vsebina"]
+       
+    # Get username from query parameters
+    username = request.query_params.get("username")
 
+    # Get user_id from database using username
+    conn = get_db_conn()
+    cursor = conn.cursor()
+    cursor.execute('SELECT id FROM users WHERE username = ?', (username,))
+    user_id = cursor.fetchone()
+    conn.close()
+
+    if not user_id:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Insert note into database with user_id
     conn = get_db_conn()
     cursor = conn.cursor()
     for item_text in text:
-        cursor.execute('INSERT INTO notes (title, text) VALUES (?, ?)', (title, item_text))
+        cursor.execute('INSERT INTO notes (user_id, title, text) VALUES (?, ?, ?)', (user_id['id'], title, item_text))
     conn.commit()
     
     # Fetch all notes after adding the new one
@@ -140,6 +167,7 @@ async def create_item(request: Request, title: Optional[str] = None, text: Optio
     
     conn.close()
     return templates.TemplateResponse("index.html", {"request": request, "notes": notes})
+
 
 
 
