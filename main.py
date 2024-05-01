@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from passlib.context import CryptContext
 from database import initialize_database
 from fastapi import Form
+from typing import List
 import sqlite3
 
 initialize_database()
@@ -88,7 +89,7 @@ async def register(user: UserRegister):
 async def read_notes(request: Request):
     conn = get_db_conn()
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM notes')
+    cursor.execute('SELECT * FROM notes ORDER BY id DESC')
     notes = cursor.fetchall()
     conn.close()
     return templates.TemplateResponse("index.html", {"request": request, "notes": notes})
@@ -106,18 +107,40 @@ def read_item(user_id: int):
         return item
     else:
         raise HTTPException(status_code=404, detail="Item not found")
+    
 
-
-# Endpoint to create a new item
-@app.post("/notes/")
-def create_item(user_id: int, title: str, text: Optional[str] = None):
+    # Endpoint to search notes by title
+@app.get("/search/", response_class=HTMLResponse)
+async def search_notes(request: Request, query: str):
     conn = get_db_conn()
     cursor = conn.cursor()
-    cursor.execute('INSERT INTO notes (title, text, user_id) VALUES (?, ?, ?)', (title, text, user_id))
-    conn.commit()
-    new_item_id = cursor.lastrowid
+    cursor.execute("SELECT * FROM notes WHERE title LIKE ?", ('%' + query + '%',))
+    notes = cursor.fetchall()
     conn.close()
-    return {"id": new_item_id, "title": title, "text": text, "user_id:": user_id}
+    return templates.TemplateResponse("index.html", {"request": request, "notes": notes})
+
+# Endpoint to create a new item
+
+@app.post("/notes/", response_class=HTMLResponse)
+async def create_item(request: Request, title: Optional[str] = None, text: Optional[List[str]] = None):
+    # If title and text are not provided, create an empty note
+    if title is None and text is None:
+        title = "Naslov"
+        text = ["Vsebina"]
+
+    conn = get_db_conn()
+    cursor = conn.cursor()
+    for item_text in text:
+        cursor.execute('INSERT INTO notes (title, text) VALUES (?, ?)', (title, item_text))
+    conn.commit()
+    
+    # Fetch all notes after adding the new one
+    cursor.execute('SELECT * FROM notes ORDER BY id DESC')
+    notes = cursor.fetchall()
+    
+    conn.close()
+    return templates.TemplateResponse("index.html", {"request": request, "notes": notes})
+
 
 
 # Endpoint to update an existing item
@@ -148,6 +171,7 @@ async def update_item(item_id: int, request: Request):
 
 
 # Endpoint to delete a specific item by ID
+
 @app.delete("/delnotes/{item_id}")
 def delete_item(item_id: int):
     conn = get_db_conn()

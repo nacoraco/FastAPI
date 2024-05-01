@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beležka</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
+    <link rel="icon" href="https://icons.iconarchive.com/icons/wwalczyszyn/android-style/256/Notes-icon.png" type="image/x-icon">
     <style>
         body {
             padding-top: 50px !important;
@@ -17,7 +17,6 @@
             max-width: 800px;
         }
 
-    
         .listek {
             width: 100% !important;
             height: 300px !important;
@@ -71,117 +70,139 @@
             left: 10%;
         }
 
-    
-
         h1 {
             font-size: 25px;
             position: relative;
         }
 
-
-
-        
     </style>
 
 </head>
 
 <body>
-    <nav class="navbar navbar-dark bg-dark fixed-top" style="background-color: black !important; background-image: url('FastAPI-master\Slike\SAN30101PP.png');">
-        <a class="navbar-brand"" href="#">Beležka</a>
-    </nav>
-
-    <div class="row">
-        {% for note in notes %}
-        <div class="col-md-3">
-            <div class='listek mb-4' contenteditable data-note-id="{{ note.id }}">
-                <h1>{{ note.title }}</h1>
-                <ul>
-                    <li>{{ note.text }}</li>
-                </ul>
-                <form id="deleteForm_{{ note.id }}">
-                    <button type="button" class="btn btn-danger" onclick="deleteNote('{{ note.id }}')">Zbriši</button>
-                </form>
-                
-                <script>
-                    function deleteNote(noteId) {
-                        if (confirm("Ali ste prepričani, da želite izbrisati to beležko?")) {
-                            fetch(`/delnotes/${noteId}`, {
-                                method: 'DELETE'
-                            })
-                            .then(response => {
-                                if (!response.ok) {
-                                    console.error('Error deleting note');
-                                } else {
-                                    const noteElement = document.querySelector(`[data-note-id="${noteId}"]`);
-                                    if (noteElement) {
-                                        noteElement.remove();
-                                    }
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error deleting note:', error);
-                            });
-                        }
-                    }
-                </script>
-                
-            </div>
+    <nav class="navbar navbar-dark bg-dark fixed-top"
+    style="background-color: black !important;background-position: 50% 50%; background-repeat: no-repeat; background-size: 300px ;background-image: url('https://cdn.mysagestore.com/a977f7602289f64e72377167a4d54382/contents/SAN30101PP/SAN30101PP.png');">
+    <div class="d-flex justify-content-between align-items-center w-100">
+        <a class="navbar-brand" href="/notes/" style="font-weight: bold; ">BELEŽKA</a>
+        <div class="mr-auto">
+            <form action="/notes/" method="post">
+                <button type="submit" class="btn btn-primary" style="background: black; border:2px solid white; color: white; font-weight: bold;">NOV LISTEK 📃</button>
+            </form>
         </div>
-        {% endfor %}
+
+        <form action="/search/" method="get" class="form-inline">
+            <input class="form-control" type="search" placeholder="Išči po naslovu" aria-label="Search" name="query" style="background-color: transparent; border: 2px solid white; color: white;">
+            <button class="btn btn-outline-success" type="submit" style=" background: white; color: black;font-weight: bold;margin-left: -20px;">IŠČI</button>
+        </form>
     </div>
+
+
+
+</nav>
+
+
+<div class="row">
+    {% for note in notes %}
+    <div class="col-md-3">
+        <div class='listek mb-4' contenteditable data-note-id="{{ note.id }}" style="position: relative;">
+            <button type="button" class="btn btn-danger" contenteditable="false" style="position: absolute; top: 20px; right: 20px;z-index:9 !important; border:2px solid black" onclick="deleteNote('{{ note.id }}')">Zbriši 🗑️</button>
+            <h1>{{ note.title }}</h1>
+            <ul>
+                {% for line in note.text.split('\n') %}
+                <li>{{ line }}</li>
+                {% endfor %}
+            </ul>
+            
+            <form id="deleteForm_{{ note.id }}"></form>
+        
+            <script>
+                function deleteNote(noteId) {
+                    if (confirm("Ali ste prepričani, da želite izbrisati to beležko?")) {
+                        fetch(`/delnotes/${noteId}`, {
+                            method: 'DELETE'
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                console.error('Error deleting note');
+                            } else {
+                                const noteElement = document.querySelector(`[data-note-id="${noteId}"]`);
+                                if (noteElement) {
+                                    noteElement.remove();
+                                }
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error deleting note:', error);
+                        });
+                    }
+                }
+            </script>
+        
+        </div>
+        
+    </div>
+    {% endfor %}
+</div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         const notes = document.querySelectorAll('.listek');
-      
+    
         notes.forEach(note => {
-          note.addEventListener('blur', () => {
-            const noteId = note.dataset.noteId;
-            const newTitle = note.querySelector('h1').textContent;
-            const newText = note.querySelector('ul li').textContent;
-      
-            // Send an AJAX request to update the note
-            fetch(`/notes/${noteId}`, {
-              method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ title: newTitle, text: newText })
-            })
-            .then(response => {
-              if (!response.ok) {
-                // Handle errors
-                console.error('Error updating note');
-              }
+            note.addEventListener('blur', () => {
+                const noteId = note.dataset.noteId;
+                const newTitle = note.querySelector('h1').textContent;
+                let newText = ""; // Initialize an empty string for concatenating text from all <li> elements
+                note.querySelectorAll('ul li').forEach(li => {
+                    newText += li.textContent + "\n"; // Concatenate text from each <li> element
+                });
+    
+                fetch(`/notes/${noteId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            title: newTitle,
+                            text: newText
+                        })
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            // Handle errors
+                            console.error('Error updating note');
+                        }
+                    });
             });
-          });
         });
-      </script>
+    </script>
+    
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var listeks = document.querySelectorAll('.listek');
-        var colors = generateRandomColors(listeks.length);
-        
-        listeks.forEach(function(listek, index) {
-            listek.style.backgroundColor = colors[index];
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var listeks = document.querySelectorAll('.listek');
+            var colors = generateRandomColors(listeks.length);
+
+            listeks.forEach(function (listek, index) {
+                listek.style.backgroundColor = colors[index];
+            });
         });
-    });
 
-    function generateRandomColors(count) {
-        var colors = [];
-        for (var i = 0; i < count; i++) {
-            var color = '#' + Math.floor(Math.random() * 16777215).toString(16); // Generates a random hex color
-            colors.push(color);
+        function generateRandomColors(count) {
+            var colors = [];
+            for (var i = 0; i < count; i++) {
+                var color = '#' + Math.floor(Math.random() * 16777215).toString(16); // Generates a random hex color
+                colors.push(color);
+            }
+            return colors;
         }
-        return colors;
-    }
-</script>
-
-<footer class="fixed-bottom" style=" background-color: black;padding: 15px;padding-bottom: 2px;">
-<p style="text-align: center; color: white;">Beležka - Kajba - Skornsek</p>
-
-</footer>
+    </script>
+<br><br>
+    <footer class="fixed-bottom" style=" background-color: black;padding: 15px;padding-bottom: 2px;">
+        <p style="text-align: center; color: white;">Beležka - Kajba - Skornšek</p>
+    </footer>
 
 </body>
 
