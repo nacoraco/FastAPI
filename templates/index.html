@@ -85,10 +85,31 @@
     <div class="d-flex justify-content-between align-items-center w-100">
         <a class="navbar-brand" href="/notes/" style="font-weight: bold; ">BELEŽKA</a>
         <div class="mr-auto">
-            <form action="/notes/" method="post">
-                <button type="submit" class="btn btn-primary" style="background: black; border:2px solid white; color: white; font-weight: bold;">NOV LISTEK 📃</button>
+            <form id="addNoteForm" method="post">
+                <button type="button" class="btn btn-primary" style="background: black; border:2px solid white; color: white; font-weight: bold;" onclick="addNote()">NOV LISTEK 📃</button>
             </form>
         </div>
+        <script>
+            function addNote() {
+                const username = "{{ username }}";
+        
+                // Pošljemo obrazec asinhrono
+                fetch("/notes/?username=" + encodeURIComponent(username), {
+                        method: 'POST'
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            location.reload();
+                        } else {
+                            console.error('Error adding note');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error adding note:', error);
+                    });
+            }
+        </script>
+        
 
         <form action="/search/" method="get" class="form-inline">
             <input class="form-control" type="search" placeholder="Išči po naslovu" aria-label="Search" name="query" style="background-color: transparent; border: 2px solid white; color: white;">
