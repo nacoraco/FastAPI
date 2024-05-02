@@ -68,7 +68,7 @@ async def login(user: UserLogin):
         username, password_hash = user_data
         if verify_password(user.password, password_hash):
             return {"message": "Login successful"}
-    raise HTTPException(status_code=401, detail="Invalid username or password")
+    raise HTTPException(status_code=401, detail="Napaka")
 
 # API endpoint za registracijo
 @app.post("/register/")
@@ -100,7 +100,15 @@ async def read_notes(request: Request):
     username = request.query_params.get("username")
     conn = get_db_conn()
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM notes ORDER BY id DESC')
+    cursor.execute('''
+    SELECT notes.*, users.username 
+    FROM notes 
+    JOIN users ON notes.user_id = users.id 
+    WHERE users.username = ? 
+    ORDER BY notes.id DESC
+''', (username,))
+
+
     notes = cursor.fetchall()
     conn.close()
     
