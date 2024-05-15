@@ -29,18 +29,13 @@ This is a FastAPI application for managing notes. It provides endpoints for CRUD
 
 9. Open your web browser and navigate to [http://127.0.0.1:8000/docs#/](http://127.0.0.1:8000/docs#/) to access the Swagger UI. This interactive documentation allows you to explore and test the available API endpoints.
 
-## API Endpoints
-
-- `GET /items/`: Retrieve all notes.
-- `GET /items/{item_id}`: Retrieve a specific note by ID.
-- `POST /items/`: Create a new note.
-- `PUT /items/{item_id}`: Update an existing note.
-- `DELETE /items/{item_id}`: Delete an existing note.
+10. Open your web browser and navigate to [http://127.0.0.1:8000/](http://127.0.0.1:8000/) to access notes app UI.
 
 ## Usage
 
 1. Use the Swagger UI or API endpoints directly to interact with the notes API.
 2. Send requests to the appropriate endpoints using tools like cURL, Postman, or your preferred HTTP client.
+3. Use notes app directly with UI.
 
 ## Contributing
 
